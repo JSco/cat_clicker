@@ -1,24 +1,25 @@
 (function() {
   var model = {
+    selectedCat: null,
     cats: [{
-      name: "josey",
-      clicks: "0",
+      name: "Josey",
+      clicks: 0,
       image: "http://placehold.it/250x150"
     }, {
-      name: "jimmy",
-      clicks: "0",
+      name: "Jimmy",
+      clicks: 0,
       image: "http://placehold.it/250x160"
     }, {
-      name: "jinxy",
-      clicks: "0",
+      name: "Jinxy",
+      clicks: 0,
       image: "http://placehold.it/250x140"
     }, {
-      name: "joey",
-      clicks: "0",
+      name: "Joey",
+      clicks: 0,
       image: "http://placehold.it/250x170"
     }, {
-      name: "kensington",
-      clicks: "0",
+      name: "Kensington",
+      clicks: 0,
       image: "http://placehold.it/250x130"
     }]
   };
@@ -27,73 +28,86 @@
 
     init: function() {
       // model.init();
-      view.init();
+      catListView.init();
+      catView.init();
     },
 
-    renderCatList: function() {
-      var cat_list = document.getElementById('cat-list'),
-        cat_name = document.getElementById('cat-name'),
-        cat_clicks = document.getElementById('cat-clicks'),
-        cat_image = document.getElementById('cat-image');
-
-      for (var cat in model.cats) {
-        var li = document.createElement('li'),
-          catName = model.cats[cat].name,
-          prettyName = catName.charAt(0).toUpperCase() + catName.substring(1);
-        li.appendChild(document.createTextNode(prettyName));
-        li.setAttribute('id', catName);
-        li.setAttribute('data-clicks', model.cats[cat].clicks);
-        li.setAttribute('data-image', model.cats[cat].image);
-
-        // variable 'i' will change and all evet listeners will reference 'i'
-        // by passing 'i' to an inner function using closures, the parameter is saved ('name') in each loop
-        // add click listener to cat list item
-        li.addEventListener('click', (function(cName) {
-          return function() {
-            cat_name.innerHTML = cName;
-            cat_clicks.innerHTML = this.getAttribute('data-clicks');
-            cat_image.setAttribute('data-name', cName.toLowerCase());
-            cat_image.setAttribute('src', this.getAttribute('data-image'));
-          };
-        })(prettyName));
-
-        // add cat list item
-        cat_list.appendChild(li);
-      }
+    getSelectedCat: function() {
+      return model.selectedCat;
     },
 
-    addImageListener: function() {
-      var cat_image = document.getElementById('cat-image'),
-        cat_clicks = document.getElementById('cat-clicks');
+    getAllCats: function() {
+      return model.cats;
+    },
 
-      cat_image.addEventListener('click', function() {
-        var catName = this.getAttribute('data-name'),
-          list_item = document.getElementById(catName),
-          clicks = list_item.getAttribute('data-clicks'),
-          newClick = parseInt(clicks, 10) + 1;
+    setSelectedCat: function(cat) {
+      model.selectedCat = cat;
+    },
 
-        // this could all be updated at once using frameworks that bind them to the model
-        // update cat list item
-        list_item.setAttribute('data-clicks', newClick);
-        // update number of clicks displayed
-        cat_clicks.innerHTML = newClick;
-        // update clicks in model
-        for (var cat in model.cats) {
-          if (model.cats[cat].name === catName) {
-            model.cats[cat].clicks = newClick;
-            break;
-          }
-        }
-      });
-    }
+    incrementCatClicks: function() {
+      model.selectedCat.clicks++;
+      catView.render();
+    },
 
   };
 
-  var view = {
+  var catListView = {
+    cat_list: null,
+
     init: function() {
-      octopus.renderCatList();
-      octopus.addImageListener();
+      this.cat_list = document.getElementById('cat-list');
+
+      this.render();
     },
+
+    render: function() {
+      var cats = octopus.getAllCats(),
+        cat,
+        cat_list_item;
+
+      this.cat_list.innerHTML = '';
+
+      for (cat = 0, len = cats.length; cat < len; cat += 1) {
+        cat_list_item = document.createElement('li');
+        cat_list_item.textContent = cats[cat].name.charAt(0).toUpperCase() + cats[cat].name.substring(1);
+
+        // variable 'cat' will change in loop and all evet listeners will reference final value
+        // by passing 'cat' to an inner function using closures, the parameter is saved ('tempCat') in each iteration of the loop
+        cat_list_item.addEventListener('click', (function(tempCat) {
+          return function() {
+            octopus.setSelectedCat(tempCat);
+            catView.render();
+          };
+        })(cats[cat]));
+
+        // add cat list item to unordered cat list
+        this.cat_list.appendChild(cat_list_item);
+      }
+    }
+  };
+
+  var catView = {
+    cat_name: null,
+    cat_clicks: null,
+    cat_image: null,
+
+    init: function() {
+      this.cat_name = document.getElementById('cat-name');
+      this.cat_clicks = document.getElementById('cat-clicks');
+      this.cat_image = document.getElementById('cat-image');
+
+      this.cat_image.addEventListener('click', function() {
+        octopus.incrementCatClicks();
+      });
+    },
+
+    render: function() {
+      var selectedCat = octopus.getSelectedCat();
+
+      this.cat_name.innerHTML = selectedCat.name.charAt(0).toUpperCase() + selectedCat.name.substring(1);
+      this.cat_clicks.innerHTML = selectedCat.clicks;
+      this.cat_image.setAttribute('src', selectedCat.image);
+    }
   };
 
   octopus.init();
