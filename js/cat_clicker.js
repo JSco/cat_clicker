@@ -1,115 +1,126 @@
-(function() {
-  var model = {
-    selectedCat: null,
-    cats: [{
-      name: "Josey",
-      clicks: 0,
-      image: "http://placehold.it/250x150"
-    }, {
-      name: "Jimmy",
-      clicks: 0,
-      image: "http://placehold.it/250x160"
-    }, {
-      name: "Jinxy",
-      clicks: 0,
-      image: "http://placehold.it/250x140"
-    }, {
-      name: "Joey",
-      clicks: 0,
-      image: "http://placehold.it/250x170"
-    }, {
-      name: "Kensington",
-      clicks: 0,
-      image: "http://placehold.it/250x130"
-    }]
-  };
+(function () {
+    var model,
+    octopus,
+    catListView,
+    catView;
 
-  var octopus = {
+    model = {
 
-    init: function() {
-      // model.init();
-      catListView.init();
-      catView.init();
-    },
+        selectedCat: null,
+        cats: [{
+            name: "Josey",
+            clicks: 0,
+            image: "http://placehold.it/250x150"
+        }, {
+            name: "Jimmy",
+            clicks: 0,
+            image: "http://placehold.it/250x160"
+        }, {
+            name: "Jinxy",
+            clicks: 0,
+            image: "http://placehold.it/250x140"
+        }, {
+            name: "Joey",
+            clicks: 0,
+            image: "http://placehold.it/250x170"
+        }, {
+            name: "Kensington",
+            clicks: 0,
+            image: "http://placehold.it/250x130"
+        }]
 
-    getSelectedCat: function() {
-      return model.selectedCat;
-    },
+    };
 
-    getAllCats: function() {
-      return model.cats;
-    },
+    octopus = {
 
-    setSelectedCat: function(cat) {
-      model.selectedCat = cat;
-    },
+        init: function () {
+            // model.init();
+            catListView.init();
+            catView.init();
+        },
 
-    incrementCatClicks: function() {
-      model.selectedCat.clicks++;
-      catView.render();
-    },
+        getSelectedCat: function () {
+            return model.selectedCat;
+        },
 
-  };
+        getAllCats: function () {
+            return model.cats;
+        },
 
-  var catListView = {
-    cat_list: null,
+        setSelectedCat: function (cat) {
+            model.selectedCat = cat;
+        },
 
-    init: function() {
-      this.cat_list = document.getElementById('cat-list');
-
-      this.render();
-    },
-
-    render: function() {
-      var cats = octopus.getAllCats(),
-        cat,
-        cat_list_item;
-
-      this.cat_list.innerHTML = '';
-
-      for (cat = 0, len = cats.length; cat < len; cat += 1) {
-        cat_list_item = document.createElement('li');
-        cat_list_item.textContent = cats[cat].name.charAt(0).toUpperCase() + cats[cat].name.substring(1);
-
-        // variable 'cat' will change in loop and all evet listeners will reference final value
-        // by passing 'cat' to an inner function using closures, the parameter is saved ('tempCat') in each iteration of the loop
-        cat_list_item.addEventListener('click', (function(tempCat) {
-          return function() {
-            octopus.setSelectedCat(tempCat);
+        incrementCatClicks: function () {
+            model.selectedCat.clicks++;
             catView.render();
-          };
-        })(cats[cat]));
+        }
 
-        // add cat list item to unordered cat list
-        this.cat_list.appendChild(cat_list_item);
-      }
-    }
-  };
+    };
 
-  var catView = {
-    cat_name: null,
-    cat_clicks: null,
-    cat_image: null,
+    catListView = {
 
-    init: function() {
-      this.cat_name = document.getElementById('cat-name');
-      this.cat_clicks = document.getElementById('cat-clicks');
-      this.cat_image = document.getElementById('cat-image');
+        cat_list: null,
 
-      this.cat_image.addEventListener('click', function() {
-        octopus.incrementCatClicks();
-      });
-    },
+        init: function () {
+            this.cat_list = document.getElementById('cat-list');
 
-    render: function() {
-      var selectedCat = octopus.getSelectedCat();
+            this.render();
+        },
 
-      this.cat_name.innerHTML = selectedCat.name.charAt(0).toUpperCase() + selectedCat.name.substring(1);
-      this.cat_clicks.innerHTML = selectedCat.clicks;
-      this.cat_image.setAttribute('src', selectedCat.image);
-    }
-  };
+        render: function () {
+            var cats = octopus.getAllCats(),
+              cat,
+              cat_list_item;
 
-  octopus.init();
+            this.cat_list.innerHTML = '';
+
+            for (cat = 0, len = cats.length; cat < len; cat += 1) {
+                cat_list_item = document.createElement('li');
+                cat_list_item.textContent = cats[cat].name.charAt(0).toUpperCase() + cats[cat].name.substring(1);
+
+                // variable 'cat' will change in loop and all evet listeners will reference final value
+                // by passing 'cat' to an inner function using closures, the parameter is saved ('tempCat') in each iteration of the loop
+                cat_list_item.addEventListener('click', (function (tempCat) {
+                    return function () {
+                        octopus.setSelectedCat(tempCat);
+                        catView.render();
+                    };
+                })(cats[cat]));
+
+                // add cat list item to unordered cat list
+                this.cat_list.appendChild(cat_list_item);
+            }
+        }
+
+    };
+
+    catView = {
+
+        cat_name: null,
+        cat_clicks: null,
+        cat_image: null,
+
+        init: function () {
+            this.cat_name = document.getElementById('cat-name');
+            this.cat_clicks = document.getElementById('cat-clicks');
+            this.cat_image = document.getElementById('cat-image');
+
+            this.cat_image.addEventListener('click', function () {
+                octopus.incrementCatClicks();
+            });
+        },
+
+        render: function () {
+            var selectedCat = octopus.getSelectedCat();
+
+            this.cat_name.innerHTML = selectedCat.name.charAt(0).toUpperCase() + selectedCat.name.substring(1);
+            this.cat_clicks.innerHTML = selectedCat.clicks;
+            this.cat_image.setAttribute('src', selectedCat.image);
+        }
+
+    };
+
+    octopus.init();
 
 })();
