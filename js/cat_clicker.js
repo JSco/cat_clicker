@@ -3,7 +3,6 @@
   var model, octopus, catListView, catView, adminView;
 
   model = {
-
     showAdminView: false,
     selectedCat: null,
 
@@ -28,11 +27,9 @@
       clicks: 0,
       image: "./images/cat-5.png"
     }]
-
   };
 
   octopus = {
-
     init: function() {
       catListView.init();
       catView.init();
@@ -73,11 +70,9 @@
       catView.render();
       catListView.render();
     }
-
   };
 
   catListView = {
-
     cat_list: null,
 
     init: function() {
@@ -108,11 +103,9 @@
         this.cat_list.appendChild(cat_list_item);
       }
     }
-
   };
 
   catView = {
-
     cat_name: null,
     cat_clicks: null,
     cat_image: null,
@@ -142,11 +135,9 @@
       this.admin_button.style.display = 'block';
       adminView.render();
     }
-
   };
 
   adminView = {
-
     admin_button: null,
     admin_form: null,
     name_field: null,
